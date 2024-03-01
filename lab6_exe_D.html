@@ -1,0 +1,94 @@
+<!--
+=========================================================
+Name        : lab6_exe_D.html
+Assignment  : Lab 6, Exercise D
+Author(s)   : Aroush Qureshi, Fatima Asif
+Submission  : Feb 29, 2024
+Description : API Usage.
+=========================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student and Courses</title>
+	<style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #f2f2f2;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+			display: block; /* Use block display */
+			width: max-content; /* Width as per content */
+			width: -moz-max-content; /* For Mozilla */
+			width: -webkit-max-content; /* For Webkit */
+        }
+        li:hover {
+            background-color: #ddd;
+        }
+        #studentList, #courseList {
+            width: 40%;
+        }
+    </style>
+      <script>
+        // Function to fetch and display students
+        async function fetchStudents() {
+            try {
+                const response = await fetch('https://65e15351d3db23f7624ac75a.mockapi.io/Students');
+                const students = await response.json();
+
+                const studentList = document.getElementById('studentList');
+
+                students.forEach(Student => {
+                    const listItem = document.createElement('li');
+                    listItem.innerText = Student.name;
+                    listItem.onclick = () => fetchCourses(Student.id);
+                    studentList.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error('Error fetching students:', error);
+            }
+        }
+
+        // Function to fetch and display courses for one student
+            async function fetchCourses(StudentId) {
+                const response = await fetch(`https://65e15351d3db23f7624ac75a.mockapi.io/Students/${StudentId}/courses`);
+                const courses = await response.json();
+                const courseList = document.getElementById('courseList');
+                courses.forEach(course => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${course.name} (Unit: ${course.unit})`;
+                    courseList.appendChild(listItem);
+            })
+        }
+           
+
+        // Fetch students on window load
+        window.onload = fetchStudents;
+    </script>
+</head>
+<body>
+    <div id="studentListSection">
+        <h1>Students</h1>
+        <ul id="studentList"></ul>
+    </div>
+    <div id="courseListSection">
+        <h2>Courses</h2>
+        <ul id="courseList"></ul>
+    </div>
+</body>
+</html>
